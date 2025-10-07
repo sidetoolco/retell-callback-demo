@@ -2,6 +2,12 @@
 
 A simple demonstration of the Retell AI callback widget that allows users to request a phone call from an AI agent.
 
+## 🌐 Live Demo
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sidetoolco/retell-callback-demo)
+
+Try the live demo: Coming soon after deployment!
+
 ## Features
 
 - 🔥 Simple single HTML file demo
@@ -80,6 +86,22 @@ The widget is configured using data attributes in the script tag. You can custom
 ## Widget Modes
 
 This demo uses the **callback widget** mode. Retell also offers a **chat widget** mode for text-based conversations. See the [Retell documentation](https://docs.retellai.com) for more information.
+
+## Deployment
+
+Deploy this demo to Vercel in minutes:
+
+### Quick Deploy
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy
+vercel
+```
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions including custom domains and configuration.
 
 ## Resources
 
