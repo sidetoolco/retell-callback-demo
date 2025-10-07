@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sidetool AI Agent Demo</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <style>
       @keyframes slowPulse {
         0%, 100% {
@@ -27,6 +26,7 @@
       .voice-wave span:nth-child(3) { animation-delay: 4s; }
       .voice-wave span:nth-child(4) { animation-delay: 1s; }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.6/dist/tailwind.min.css" rel="stylesheet">
   </head>
   <body class="bg-white min-h-screen">
     <!-- Header -->
@@ -116,7 +116,7 @@
     </div>
 
     <script type="module">
-      import { RetellWebClient } from "https://unpkg.com/retell-client-js-sdk@2.0.7/dist/index.js";
+      import RetellWebClient from "https://cdn.jsdelivr.net/npm/retell-client-js-sdk@2.0.7/+esm";
 
       // Configuration - Replace with your credentials
       const CONFIG = {
