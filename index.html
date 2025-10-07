@@ -114,8 +114,9 @@
       </div>
     </div>
 
-    <script src="https://unpkg.com/retell-client-js-sdk@2.0.7/dist/retell-client-js-sdk.umd.js"></script>
-    <script>
+    <script type="module">
+      import { RetellWebClient } from "https://unpkg.com/retell-client-js-sdk@2.0.7/dist/index.js";
+
       // Configuration - Replace with your credentials
       const CONFIG = {
         publicKey: 'key_9b7349002a90326c7c553addd6ce',
@@ -169,7 +170,7 @@
       }
 
       // Start call
-      async function startCall() {
+      window.startCall = async function() {
         try {
           initRetellClient();
 
@@ -217,7 +218,7 @@
       }
 
       // End call
-      function endCall() {
+      window.endCall = function() {
         console.log('🔚 Ending call...');
         if (retellClient) {
           retellClient.stopCall();
