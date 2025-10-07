@@ -1,6 +1,6 @@
-# Retell Callback Widget Demo
+# Retell Web Call Demo
 
-A simple demonstration of the Retell AI callback widget that allows users to request a phone call from an AI agent.
+A simple demonstration of the Retell AI web call functionality that allows users to have voice conversations with an AI agent directly in their browser.
 
 ## 🌐 Live Demo
 
@@ -10,11 +10,12 @@ Try the live demo: Coming soon after deployment!
 
 ## Features
 
-- 🔥 Simple single HTML file demo
-- 📞 Retell callback widget integration
-- 🎨 Modern, responsive design
-- 🚀 No build process required
-- 🌍 Multi-country phone number support
+- 🎙️ **Browser-based voice calls** - No phone required, works directly in the browser
+- 🤖 **Real-time AI conversations** - Speak naturally with an AI agent
+- 🎨 **Modern, clean design** - Matches Kleva demo styling
+- 📱 **Fully responsive** - Works on desktop and mobile
+- ⚡ **No build process** - Single HTML file, ready to use
+- 🔊 **WebRTC audio** - Low-latency voice communication
 
 ## Quick Start
 
@@ -36,60 +37,91 @@ Try the live demo: Coming soon after deployment!
    npx http-server
    ```
 
-3. **Test the callback widget**
+3. **Test the web call**
 
-   Click the phone icon in the bottom right corner of the page to trigger the callback widget.
-
-## Configuration
-
-The widget is configured using data attributes in the script tag. You can customize:
-
-- `data-public-key`: Your Retell public key
-- `data-agent-id`: Your Retell agent ID
-- `data-phone-number`: The phone number that will make outbound calls
-- `data-title`: Custom widget title
-- `data-countries`: Comma-separated country codes (e.g., "US,CA,GB")
-- `data-color`: Hex color code for widget theme
-- `data-tc`: URL to your terms and conditions (optional)
-- `data-recaptcha-key`: Google reCAPTCHA v3 site key (optional)
-
-### Example Configuration
-
-```html
-<script
-  id="retell-widget"
-  src="https://dashboard.retellai.com/retell-widget.js"
-  type="module"
-  data-public-key="key_9b7349002a90326c7c553addd6ce"
-  data-agent-id="agent_d1e33aa42cae40033f4ce5e641"
-  data-widget="callback"
-  data-phone-number="+1234567890"
-  data-title="Request a Call"
-  data-countries="US,CA,GB"
-  data-color="#6366f1"
-></script>
-```
+   Click "Start Voice Call" and allow microphone access when prompted.
 
 ## How It Works
 
-1. User clicks the floating phone button
-2. A form appears collecting:
-   - First name
-   - Last name
-   - Phone number
-   - Privacy policy agreement
-3. User submits the form
-4. The Retell API creates a phone call
-5. User receives a call from the configured phone number
-6. The conversation is handled by the configured AI agent
+1. User clicks "Start Voice Call" button
+2. Browser requests microphone permission
+3. App creates a web call session via Retell API
+4. WebRTC connection established with AI agent
+5. User can speak naturally - AI responds in real-time
+6. Call timer shows duration
+7. User clicks "End Call" to disconnect
 
-## Widget Modes
+## Configuration
 
-This demo uses the **callback widget** mode. Retell also offers a **chat widget** mode for text-based conversations. See the [Retell documentation](https://docs.retellai.com) for more information.
+The demo is pre-configured with these credentials:
+
+- **Public Key**: `key_9b7349002a90326c7c553addd6ce`
+- **Agent ID**: `agent_d1e33aa42cae40033f4ce5e641`
+
+To use your own agent:
+
+1. Open `index.html`
+2. Find the `CONFIG` object (around line 120)
+3. Replace with your credentials:
+
+```javascript
+const CONFIG = {
+  publicKey: 'your_public_key_here',
+  agentId: 'your_agent_id_here'
+};
+```
+
+## Browser Support
+
+Works in modern browsers with WebRTC support:
+
+- ✅ Chrome/Edge (recommended)
+- ✅ Firefox
+- ✅ Safari (macOS/iOS)
+- ✅ Opera
+
+**Note**: HTTPS required for microphone access (localhost works for testing)
+
+## Technical Details
+
+### Dependencies
+
+- **Retell Web Client SDK** v2.0.7 - Loaded from CDN
+- **Tailwind CSS** - For styling (loaded from CDN)
+
+### API Flow
+
+```
+1. User clicks button
+   ↓
+2. POST /v2/create-web-call
+   - Headers: Authorization with public key
+   - Body: { agent_id }
+   ↓
+3. Response: { access_token, call_id }
+   ↓
+4. retellClient.startCall({ accessToken })
+   ↓
+5. WebRTC connection established
+   ↓
+6. Real-time audio streaming
+```
+
+### Events
+
+The SDK provides these events:
+
+- `call_started` - Connection established
+- `call_ended` - Call disconnected
+- `error` - Error occurred
+- `agent_start_talking` - Agent begins speaking
+- `agent_stop_talking` - Agent finishes speaking
+- `audio` - Audio data received
+- `update` - Call status update
 
 ## Deployment
 
-Deploy this demo to Vercel in minutes:
+Deploy to Vercel in minutes:
 
 ### Quick Deploy
 
@@ -101,27 +133,97 @@ npm install -g vercel
 vercel
 ```
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions including custom domains and configuration.
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+## Customization
+
+### Styling
+
+The demo uses Tailwind CSS. Key styling elements:
+
+- **Voice Waves**: Purple animated circles with `slowPulse` animation
+- **Layout**: Clean, centered design matching Kleva aesthetic
+- **Colors**: Black/white theme with purple accents
+- **Typography**: Bold headings with gray subtitles
+
+### Adding Custom Variables
+
+To pass dynamic variables to your agent:
+
+```javascript
+const response = await fetch('https://api.retellai.com/v2/create-web-call', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${CONFIG.publicKey}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    agent_id: CONFIG.agentId,
+    retell_llm_dynamic_variables: {
+      user_name: 'John Doe',
+      custom_field: 'value'
+    }
+  })
+});
+```
+
+## Troubleshooting
+
+### Microphone Not Working
+
+- Check browser permissions (click lock icon in address bar)
+- Ensure you're using HTTPS (or localhost for testing)
+- Try a different browser (Chrome recommended)
+
+### Connection Fails
+
+- Verify your public key is correct
+- Check agent ID exists and is active
+- Look at browser console for detailed errors
+- Ensure you have Retell credits available
+
+### No Audio Heard
+
+- Check your system audio output
+- Verify agent is configured with a voice
+- Test with headphones to rule out echo issues
+
+### CORS Errors
+
+- This shouldn't happen with Retell's public key system
+- If you see CORS errors, verify you're using the public key (not API key)
+
+## Examples
+
+- `index.html` - Main web call demo
+- `web-call-demo.html` - Alternative implementation
+- `examples/with-conversation-flow.html` - Using conversation flows
 
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)
-- [Retell Website Widget Guide](https://docs.retellai.com/build/retell-website-widget)
+- [Retell Web SDK](https://docs.retellai.com/sdk-reference/web-sdk)
 - [Create Voice Agent Guide](https://docs.retellai.com/build/create-voice-agent)
 - [Retell Public Keys](https://docs.retellai.com/accounts/public-keys)
 
 ## Security
 
-- The widget uses Retell's public key system, allowing direct API calls from the frontend
-- Optional reCAPTCHA v3 protection available for bot prevention
-- No backend proxy required for basic functionality
+- Uses Retell's public key system - safe for frontend use
+- No sensitive credentials exposed
+- HTTPS required for production (microphone access)
+- WebRTC encrypted by default
 
 ## Support
 
 For issues or questions:
 - [Retell Documentation](https://docs.retellai.com)
 - [GitHub Issues](https://github.com/sidetoolco/retell-callback-demo/issues)
+- Check browser console for detailed error messages
 
 ## License
 
 MIT License - feel free to use this demo as a starting point for your own projects.
+
+---
+
+**Note**: This demo creates browser-based voice calls, not phone calls. For phone callback functionality, see the `examples/` folder or check the Retell documentation for the callback widget.
