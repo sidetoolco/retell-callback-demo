@@ -6,6 +6,20 @@
     <title>Sidetool AI Agent Demo</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <style>
+      /* Reset and base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: white;
+        min-height: 100vh;
+      }
+
+      /* Animations */
       @keyframes slowPulse {
         0%, 100% {
           transform: scale(1);
@@ -17,6 +31,11 @@
         }
       }
 
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
       .voice-wave span {
         animation: slowPulse 8s ease-in-out infinite;
       }
@@ -25,100 +44,297 @@
       .voice-wave span:nth-child(2) { animation-delay: 2s; }
       .voice-wave span:nth-child(3) { animation-delay: 4s; }
       .voice-wave span:nth-child(4) { animation-delay: 1s; }
+
+      /* Layout */
+      header {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem 1.5rem;
+      }
+
+      .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 80px);
+        padding: 2rem 1.5rem;
+      }
+
+      .content {
+        text-align: center;
+        max-width: 64rem;
+        width: 100%;
+      }
+
+      /* Badge */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        background: black;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 2rem;
+      }
+
+      .pulse-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        background: #ef4444;
+        border-radius: 9999px;
+        margin-right: 0.5rem;
+        animation: pulse 2s infinite;
+      }
+
+      /* Voice Waves */
+      .voice-wave {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 10rem;
+        height: 10rem;
+        margin: 0 auto 2.5rem;
+      }
+
+      .voice-wave span {
+        position: absolute;
+        border-radius: 9999px;
+      }
+
+      .voice-wave span:nth-child(1) {
+        width: 8rem;
+        height: 8rem;
+        background: #d8b4fe;
+        opacity: 0.2;
+      }
+
+      .voice-wave span:nth-child(2) {
+        width: 6rem;
+        height: 6rem;
+        background: #c084fc;
+        opacity: 0.3;
+      }
+
+      .voice-wave span:nth-child(3) {
+        width: 4rem;
+        height: 4rem;
+        background: #a855f7;
+        opacity: 0.4;
+      }
+
+      .voice-wave span:nth-child(4) {
+        position: relative;
+        width: 3rem;
+        height: 3rem;
+        background: #9333ea;
+      }
+
+      /* Typography */
+      h1 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: black;
+      }
+
+      h2 {
+        font-size: 3rem;
+        font-weight: bold;
+        color: black;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+      }
+
+      h2 .subtitle {
+        color: #6b7280;
+      }
+
+      .description {
+        font-size: 1.25rem;
+        color: #6b7280;
+        max-width: 42rem;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+      }
+
+      /* Buttons */
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+        outline: none;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: black;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        font-size: 1.125rem;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        background: #374151;
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-danger {
+        background: #dc2626;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        font-size: 1.125rem;
+      }
+
+      .btn-danger:hover {
+        background: #b91c1c;
+      }
+
+      /* Status displays */
+      .error-box {
+        margin-top: 1.5rem;
+        background: #fee2e2;
+        border: 1px solid #fca5a5;
+        color: #991b1b;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        max-width: 42rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .success-text {
+        color: #059669;
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+      }
+
+      .timer {
+        background: #f3f4f6;
+        border-radius: 0.5rem;
+        padding: 1rem 1.5rem;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+      }
+
+      .timer-display {
+        font-size: 1.875rem;
+        font-family: 'Courier New', monospace;
+        color: #1f2937;
+      }
+
+      .hint-text {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 1rem;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        h2 {
+          font-size: 2rem;
+        }
+
+        .description {
+          font-size: 1rem;
+        }
+      }
     </style>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.6/dist/tailwind.min.css" rel="stylesheet">
+    <script type="importmap">
+      {
+        "imports": {
+          "retell-client-js-sdk": "https://cdn.jsdelivr.net/npm/retell-client-js-sdk@2.0.7/+esm"
+        }
+      }
+    </script>
   </head>
-  <body class="bg-white min-h-screen">
+  <body>
     <!-- Header -->
-    <header class="border-b border-gray-200 px-6 py-4">
-      <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <div class="flex items-center">
-          <h1 class="text-xl font-bold text-black">Retell AI Demo</h1>
-        </div>
-      </div>
+    <header>
+      <h1>Retell AI Demo</h1>
     </header>
 
     <!-- Main Content -->
-    <div class="flex items-center justify-center min-h-[calc(100vh-80px)] px-6 py-8">
-      <div class="text-center max-w-4xl mx-auto w-full">
+    <div class="container">
+      <div class="content">
         <!-- Live Badge -->
-        <div class="inline-flex items-center bg-black text-white px-4 py-2 rounded-full text-sm font-medium mb-8">
-          <div class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></div>
+        <div class="badge">
+          <div class="pulse-dot"></div>
           LIVE: Connecting agents in real time
         </div>
 
         <!-- Voice Waves -->
-        <div class="relative flex items-center justify-center w-40 h-40 mx-auto mb-10">
-          <div class="voice-wave">
-            <span class="absolute w-32 h-32 rounded-full bg-purple-300 opacity-20"></span>
-            <span class="absolute w-24 h-24 rounded-full bg-purple-400 opacity-30"></span>
-            <span class="absolute w-16 h-16 rounded-full bg-purple-500 opacity-40"></span>
-            <span class="relative w-12 h-12 rounded-full bg-purple-600"></span>
-          </div>
+        <div class="voice-wave">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
 
         <!-- Status Display -->
         <div id="status-area">
-          <!-- Title -->
-          <h2 class="text-5xl font-bold text-black leading-tight mb-6">
+          <h2>
             AI Agent
             <br />
-            <span class="text-gray-600">Web Call Widget</span>
+            <span class="subtitle">Web Call Widget</span>
           </h2>
 
-          <!-- Subtitle -->
-          <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p class="description">
             Connect directly with your agent.<br />
             Start a voice conversation right in your browser.
           </p>
 
-          <!-- Connect Button -->
-          <button
-            id="connect-btn"
-            class="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-            onclick="startCall()"
-          >
+          <button id="connect-btn" class="btn-primary" onclick="startCall()">
             Start Voice Call
           </button>
 
-          <!-- Error Display -->
-          <div id="error-area" class="hidden mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg max-w-2xl mx-auto"></div>
+          <div id="error-area" class="error-box hidden"></div>
         </div>
 
-        <!-- Connected State (hidden by default) -->
+        <!-- Connected State -->
         <div id="connected-area" class="hidden">
-          <h2 class="text-4xl font-bold text-black leading-tight mb-8">
+          <h2>
             Connected
             <br />
-            <span class="text-gray-600">AI Agent</span>
+            <span class="subtitle">AI Agent</span>
           </h2>
-          <div class="space-y-6">
-            <div class="text-green-600 text-lg font-semibold">
-              ✅ Voice call active
-            </div>
-            <div class="bg-gray-100 rounded-lg px-6 py-4 inline-block">
-              <span id="duration" class="text-3xl font-mono text-gray-800">00:00</span>
-            </div>
-            <div>
-              <button
-                onclick="endCall()"
-                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors text-lg"
-              >
-                End Call
-              </button>
-            </div>
-            <p class="text-sm text-gray-500 mt-4">
-              Speak naturally - the AI agent will respond in real-time
-            </p>
+
+          <div class="success-text">✅ Voice call active</div>
+
+          <div class="timer">
+            <span id="duration" class="timer-display">00:00</span>
           </div>
+
+          <div>
+            <button class="btn-danger" onclick="endCall()">
+              End Call
+            </button>
+          </div>
+
+          <p class="hint-text">
+            Speak naturally - the AI agent will respond in real-time
+          </p>
         </div>
       </div>
     </div>
 
     <script type="module">
-      import RetellWebClient from "https://cdn.jsdelivr.net/npm/retell-client-js-sdk@2.0.7/+esm";
+      import { RetellWebClient } from "retell-client-js-sdk";
 
-      // Configuration - Replace with your credentials
+      // Configuration
       const CONFIG = {
         publicKey: 'key_9b7349002a90326c7c553addd6ce',
         agentId: 'agent_d1e33aa42cae40033f4ce5e641'
@@ -133,7 +349,6 @@
         if (!retellClient) {
           retellClient = new RetellWebClient();
 
-          // Event listeners
           retellClient.on('call_started', () => {
             console.log('✅ Call started');
             showConnectedState();
@@ -159,12 +374,7 @@
             console.log('🔇 Agent stopped talking');
           });
 
-          retellClient.on('audio', (audio) => {
-            // Audio data received
-          });
-
           retellClient.on('update', (update) => {
-            // Call update received
             console.log('Update:', update);
           });
         }
@@ -175,16 +385,13 @@
         try {
           initRetellClient();
 
-          // Show connecting state
           const btn = document.getElementById('connect-btn');
           btn.disabled = true;
           btn.textContent = 'Connecting...';
-          btn.classList.add('opacity-50', 'cursor-not-allowed');
           hideError();
 
           console.log('🚀 Creating web call...');
 
-          // Create web call via API
           const response = await fetch('https://api.retellai.com/v2/create-web-call', {
             method: 'POST',
             headers: {
@@ -204,7 +411,6 @@
           const data = await response.json();
           console.log('✅ Web call created:', data.call_id);
 
-          // Start the call with access token
           await retellClient.startCall({
             accessToken: data.access_token
           });
@@ -216,7 +422,7 @@
           showError(error.message || 'Failed to start call. Please try again.');
           resetToInitialState();
         }
-      }
+      };
 
       // End call
       window.endCall = function() {
@@ -225,7 +431,7 @@
           retellClient.stopCall();
         }
         resetToInitialState();
-      }
+      };
 
       // UI State Management
       function showConnectedState() {
@@ -239,7 +445,6 @@
         const btn = document.getElementById('connect-btn');
         btn.disabled = false;
         btn.textContent = 'Start Voice Call';
-        btn.classList.remove('opacity-50', 'cursor-not-allowed');
         stopTimer();
       }
 
@@ -279,13 +484,9 @@
         document.getElementById('duration').textContent = display;
       }
 
-      // Initialize on page load
+      // Initialize
       document.addEventListener('DOMContentLoaded', () => {
         console.log('🎯 Retell Web Call Demo initialized');
-        console.log('📋 Configuration:', {
-          publicKey: CONFIG.publicKey.substring(0, 20) + '...',
-          agentId: CONFIG.agentId
-        });
         initRetellClient();
       });
     </script>
